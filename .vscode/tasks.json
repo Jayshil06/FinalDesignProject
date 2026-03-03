@@ -1,0 +1,23 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run Project",
+      "type": "shell",
+      "command": "$mvn='C:\\Program Files\\NetBeans-25\\netbeans\\java\\maven\\bin\\mvn.cmd'; $tomcat='C:\\apache-tomcat-9.0.113'; if (!(Test-Path $mvn)) { throw \"Maven not found at $mvn\" }; if (!(Test-Path \"$tomcat\\bin\\startup.bat\")) { throw \"Tomcat not found at $tomcat\" }; & $mvn clean package -DskipTests; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; Copy-Item -Force \"${workspaceFolder}\\target\\FinalDesignProject-1.0-SNAPSHOT.war\" \"$tomcat\\webapps\\FinalDesignProject-1.0-SNAPSHOT.war\"; $env:CATALINA_HOME=$tomcat; $env:CATALINA_BASE=$tomcat; Push-Location \"$tomcat\\bin\"; & .\\startup.bat; Pop-Location; Start-Sleep -Seconds 4; Start-Process \"http://localhost:8080/FinalDesignProject-1.0-SNAPSHOT/\"; Write-Host 'Project started at http://localhost:8080/FinalDesignProject-1.0-SNAPSHOT/'",
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "shell": {
+          "executable": "powershell",
+          "args": [
+            "-NoProfile",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-Command"
+          ]
+        }
+      },
+      "problemMatcher": []
+    }
+  ]
+}
