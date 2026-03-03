@@ -4,8 +4,6 @@ The **Online Placement Management System** is a Java-based web application devel
 
 The system provides a centralized platform for **Students, Recruiters (Companies), and Admin** to manage placement activities seamlessly.
 
----
-
 ## 📌 Project Overview
 
 This project simplifies the campus recruitment process by digitizing:
@@ -19,7 +17,6 @@ This project simplifies the campus recruitment process by digitizing:
 
 The system reduces manual work and improves transparency in placement activities.
 
----
 
 ## 👥 User Modules
 
@@ -48,8 +45,6 @@ The system reduces manual work and improves transparency in placement activities
 - Monitor applications
 - Download student resumes
 
----
-
 ## 🛠️ Technologies Used
 
 ### Frontend
@@ -71,7 +66,6 @@ The system reduces manual work and improves transparency in placement activities
 ### IDE
 - NetBeans IDE
 
----
 
 ## 🗂️ Project Structure
 
@@ -94,8 +88,6 @@ FinalDesignProject/
 └── database.sql                         # Database structure (if included)
 ```
 
----
-
 ## 🗄️ Database Configuration
 
 1. Install MySQL Server.
@@ -115,7 +107,6 @@ DriverManager.getConnection(
 );
 ```
 
----
 
 ## 🚀 How to Run the Project (Using NetBeans)
 
@@ -145,8 +136,6 @@ DriverManager.getConnection(
 http://localhost:8080/FinalDesignProject/
 ```
 
----
-
 ## 🧪 Testing
 
 The system was tested for:
@@ -160,16 +149,12 @@ The system was tested for:
 
 All modules were verified for correct functionality.
 
----
-
 ## ⚠️ Limitations
 
 - Basic authentication security
 - No email/SMS notifications
 - Designed for institutional use only
 - Limited scalability for large concurrent users
-
----
 
 ## 🔮 Future Scope
 
@@ -180,16 +165,6 @@ All modules were verified for correct functionality.
 - Enhanced security with encryption
 - Cloud deployment support
 
----
-
-## 📄 License
-
-This project is developed for **academic purposes**.
-
----
-
 ## 👨‍💻 Developed By
 
-**Group G-54**  
-Under the guidance of  
-**Prof. Jalpa Khamar**
+**Jayshil**  
