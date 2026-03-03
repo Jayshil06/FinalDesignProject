@@ -1,45 +1,195 @@
-# FinalDesignProject
+# 🎓 Online Placement Management System
 
-This repository contains a Java EE web application for managing companies and student applications as part of a final design project.
+The **Online Placement Management System** is a Java-based web application developed to automate and manage the campus placement process efficiently.
 
-## Overview
+The system provides a centralized platform for **Students, Recruiters (Companies), and Admin** to manage placement activities seamlessly.
 
-The application provides the following features:
+---
 
-- Admin login and management of companies and student lists.
-- Students can register, login, view available companies, apply to companies, and view their applications.
-- Company details and listings are displayed using JSP pages.
+## 📌 Project Overview
 
-## Technologies Used
+This project simplifies the campus recruitment process by digitizing:
 
-- Java Servlet API
-- JSP
-- Maven for build management
-- Tomcat as the target application server
-- JPA (configured via `persistence.xml`) for persistence
+- Student registration and profile management
+- Resume upload and download
+- Company campus drive requests
+- Job applications and tracking
+- CGPA-based student filtering
+- Admin approval and management
 
-## Project Structure
+The system reduces manual work and improves transparency in placement activities.
+
+---
+
+## 👥 User Modules
+
+### 👨‍🎓 Student Module
+- Register and login
+- Manage profile
+- Upload resume
+- View company list
+- Apply for jobs
+- Track application status
+
+### 🏢 Recruiter / Company Module
+- Login to system
+- Request campus drive
+- Add job details
+- Filter students based on CGPA
+- Shortlist candidates
+- View applications
+- Organize online aptitude tests
+
+### 👨‍💼 Admin Module
+- Admin login
+- Manage students
+- Approve/reject company requests
+- Manage company listings
+- Monitor applications
+- Download student resumes
+
+---
+
+## 🛠️ Technologies Used
+
+### Frontend
+- JSP (JavaServer Pages)
+- HTML
+- CSS
+- JavaScript
+
+### Backend
+- Java Servlets
+- JDBC (Java Database Connectivity)
+
+### Database
+- MySQL
+
+### Server
+- Apache Tomcat
+
+### IDE
+- NetBeans IDE
+
+---
+
+## 🗂️ Project Structure
 
 ```
-src/main/java                # Servlet and model classes under com.me.finaldesignproject
-src/main/resources           # Persistence configuration
-src/main/webapp              # JSP pages, HTML, web.xml, and static assets
-src/test/java                # Unit tests
+FinalDesignProject/
+│
+├── src/
+│   ├── java/com/me/finaldesignproject/   # Servlet classes
+│   ├── webapp/                          # JSP files
+│
+├── web/
+│   ├── admin_login.jsp
+│   ├── student_login.jsp
+│   ├── company_dashboard.jsp
+│   ├── student_dashboard.jsp
+│   ├── web.xml
+│
+├── resumes/                             # Uploaded resume files
+│
+└── database.sql                         # Database structure (if included)
 ```
 
-## Building and Running
+---
 
-1. Ensure Maven and Tomcat are installed.
-2. Run `mvn clean package` to build the project.
-3. Deploy the generated WAR (`target/FinalDesignProject-1.0-SNAPSHOT.war`) to a Tomcat server.
+## 🗄️ Database Configuration
 
-You can use the provided VS Code task labeled "Run Project" to build and deploy automatically.
+1. Install MySQL Server.
+2. Create a database:
 
-## Notes
+```sql
+CREATE DATABASE design_engineering_portal;
+```
 
-- Update the database configuration in `persistence.xml` as needed.
-- The context path when deployed is `FinalDesignProject-1.0-SNAPSHOT` by default.
+3. Update database credentials inside your Servlet files:
 
-## License
+```java
+DriverManager.getConnection(
+    "jdbc:mysql://localhost:3306/design_engineering_portal",
+    "root",
+    "your_password"
+);
+```
 
-This project is for academic purposes.
+---
+
+## 🚀 How to Run the Project (Using NetBeans)
+
+### Step 1: Install Required Software
+- NetBeans IDE
+- Apache Tomcat Server
+- MySQL Server
+
+### Step 2: Open Project in NetBeans
+1. Open NetBeans.
+2. Click **File → Open Project**.
+3. Select the project folder.
+4. Configure **Apache Tomcat** in Services if not already configured.
+
+### Step 3: Configure Database
+- Start MySQL server.
+- Import or create required tables.
+- Ensure database name and credentials match your code.
+
+### Step 4: Run the Project
+1. Right-click the project.
+2. Click **Run**.
+3. The project will deploy automatically on Tomcat.
+4. Open in browser:
+
+```
+http://localhost:8080/FinalDesignProject/
+```
+
+---
+
+## 🧪 Testing
+
+The system was tested for:
+
+- Registration & Login
+- Resume Upload & Download
+- Company Management
+- Job Application Process
+- CGPA Filtering
+- Application Tracking
+
+All modules were verified for correct functionality.
+
+---
+
+## ⚠️ Limitations
+
+- Basic authentication security
+- No email/SMS notifications
+- Designed for institutional use only
+- Limited scalability for large concurrent users
+
+---
+
+## 🔮 Future Scope
+
+- Email notifications
+- Real-time alerts
+- Integration with external job portals
+- Advanced analytics dashboard
+- Enhanced security with encryption
+- Cloud deployment support
+
+---
+
+## 📄 License
+
+This project is developed for **academic purposes**.
+
+---
+
+## 👨‍💻 Developed By
+
+**Group G-54**  
+Under the guidance of  
+**Prof. Jalpa Khamar**
