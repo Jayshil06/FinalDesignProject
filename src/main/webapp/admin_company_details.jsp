@@ -15,12 +15,14 @@
             background: linear-gradient(to right, #141e30, #243b55);
             color: #f5f5f5;
             padding: 40px;
+            animation: fadeInBody 0.7s ease;
         }
 
         h2 {
             text-align: center;
             color: #ffdd57;
             margin-bottom: 30px;
+            animation: slideDown 0.7s ease;
         }
 
         table {
@@ -32,6 +34,7 @@
             overflow: hidden;
             margin-bottom: 30px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            animation: fadeInUp 0.8s ease;
         }
 
         th, td {
@@ -57,10 +60,12 @@
             border-radius: 25px;
             cursor: pointer;
             transition: background 0.3s ease;
+            transition: background 0.3s ease, transform 0.2s ease;
         }
 
         .btn:hover {
             background-color: #187bcd;
+            transform: translateY(-1px) scale(1.02);
         }
 
         .form-section {
@@ -70,6 +75,7 @@
             margin-top: 30px;
             border-radius: 15px;
             box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 0.8s ease;
         }
 
         .form-section h3 {
@@ -113,6 +119,21 @@
             margin-top: 40px;
             border: none;
             border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes fadeInBody {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>

@@ -9,13 +9,13 @@
         return;
     }
 
-    String fullName = "", email = "", branch = "", contact = "", resumePath = "", companyName = "";
+    String fullName = "", email = "", branch = "", contact = "", resumePath = "", companyName = "", cgpa = "";
 
     try {
         Class.forName("com.mysql.cj.jdbc.Driver");
         Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/design_engineering_portal", "root", "root");
 
-        PreparedStatement stuStmt = conn.prepareStatement("SELECT full_name, email, branch, contact, resume_path FROM students WHERE enrollment_no = ?");
+        PreparedStatement stuStmt = conn.prepareStatement("SELECT full_name, email, branch, contact, resume_path, cgpa FROM students WHERE enrollment_no = ?");
         stuStmt.setString(1, enrollmentNo);
         ResultSet stuRs = stuStmt.executeQuery();
         if (stuRs.next()) {
@@ -24,6 +24,7 @@
             branch = stuRs.getString("branch");
             contact = stuRs.getString("contact");
             resumePath = stuRs.getString("resume_path");
+            cgpa = stuRs.getString("cgpa");
         }
 
         PreparedStatement compStmt = conn.prepareStatement("SELECT company_name FROM companies WHERE company_id = ?");
@@ -153,6 +154,9 @@
 
             <label>Contact</label>
             <input type="text" value="<%= contact %>" readonly>
+
+            <label>CGPA</label>
+            <input type="number" name="cgpa" step="0.01" min="0" max="10" value="<%= cgpa == null ? "" : cgpa %>" required>
 
             <label>Resume</label>
             <input type="text" value="<%= resumePath %>" readonly>

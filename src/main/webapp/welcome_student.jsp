@@ -14,6 +14,7 @@
             font-family: 'Poppins', sans-serif;
             background-color: transparent;
             color: #ecf0f1;
+            animation: fadeInBody 0.7s ease;
         }
         .welcome-box {
             background: rgba(255, 255, 255, 0.05);
@@ -23,14 +24,31 @@
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
             max-width: 600px;
             margin: auto;
+            animation: fadeInUp 0.8s ease;
         }
         .welcome-box h1 {
             font-size: 28px;
             color: #00cec9;
+            animation: slideDown 0.7s ease;
         }
         .welcome-box p {
             font-size: 18px;
             color: #dfe6e9;
+        }
+
+        @keyframes fadeInBody {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>

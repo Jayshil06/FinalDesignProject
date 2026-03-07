@@ -3,9 +3,9 @@ package com.me.finaldesignproject;
 import java.io.*;
 import java.nio.file.*;
 import java.sql.*;
-import javax.servlet.*;
-import javax.servlet.annotation.MultipartConfig;
-import javax.servlet.http.*;
+import jakarta.servlet.*;
+import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.*;
 
 
 @MultipartConfig(
@@ -16,7 +16,7 @@ import javax.servlet.http.*;
 public class StudentRegisterServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    private static final String RESUME_UPLOAD_DIR = "resumes";
+    private static final String RESUME_UPLOAD_DIR = "C:" + File.separator + "placement_resumes";
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -30,20 +30,49 @@ public class StudentRegisterServlet extends HttpServlet {
         String dob = request.getParameter("dob");
         String branch = request.getParameter("branch");
         String contact = request.getParameter("contact");
+        String cgpaStr = request.getParameter("cgpa");
         String gender = request.getParameter("gender");
         String address = request.getParameter("address");
 
+        double cgpa;
+        try {
+            cgpa = Double.parseDouble(cgpaStr);
+            if (cgpa < 0 || cgpa > 10) {
+                throw new NumberFormatException("CGPA out of range");
+            }
+        } catch (Exception e) {
+            request.setAttribute("error", "Please enter a valid CGPA between 0 and 10.");
+            request.getRequestDispatcher("student_register.jsp").forward(request, response);
+            return;
+        }
+
         Part resumePart = request.getPart("resume");
         String fileName = Paths.get(resumePart.getSubmittedFileName()).getFileName().toString();
+        if (fileName == null || fileName.trim().isEmpty()) {
+            request.setAttribute("error", "Please upload a valid resume file.");
+            request.getRequestDispatcher("student_register.jsp").forward(request, response);
+            return;
+        }
 
-        // Prepare upload directory
-        String uploadPath = getServletContext().getRealPath("") + File.separator + RESUME_UPLOAD_DIR;
+        // Store resumes in a stable folder outside deployed WAR so redeploy does not delete files
+        String uploadPath = RESUME_UPLOAD_DIR;
         File uploadDir = new File(uploadPath);
-        if (!uploadDir.exists()) uploadDir.mkdirs();
+        if (!uploadDir.exists()) {
+            uploadDir.mkdirs();
+        }
+        if (!uploadDir.exists() || !uploadDir.canWrite()) {
+            request.setAttribute("error", "Resume folder is not writable: " + uploadPath);
+            request.getRequestDispatcher("student_register.jsp").forward(request, response);
+            return;
+        }
 
-        String resumePath = RESUME_UPLOAD_DIR + File.separator + enrollment_no + "_" + fileName;
-        String fullResumePath = uploadPath + File.separator + enrollment_no + "_" + fileName;
-        resumePart.write(fullResumePath);
+        String sanitizedFileName = fileName.replaceAll("[\\\\/:*?\"<>|]", "_");
+        String finalFileName = enrollment_no + "_" + sanitizedFileName;
+        Path targetPath = Paths.get(uploadPath, finalFileName);
+        try (InputStream in = resumePart.getInputStream()) {
+            Files.copy(in, targetPath, StandardCopyOption.REPLACE_EXISTING);
+        }
+        String fullResumePath = targetPath.toString();
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -53,8 +82,8 @@ public class StudentRegisterServlet extends HttpServlet {
             conn = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/design_engineering_portal", "root", "root");
 
-            String sql = "INSERT INTO students (enrollment_no, full_name, email, password, dob, branch, contact, gender, address, resume_path) "
-                       + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO students (enrollment_no, full_name, email, password, dob, branch, contact, cgpa, gender, address, resume_path) "
+                       + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             stmt = conn.prepareStatement(sql);
             stmt.setString(1, enrollment_no);
@@ -64,9 +93,10 @@ public class StudentRegisterServlet extends HttpServlet {
             stmt.setString(5, dob);
             stmt.setString(6, branch);
             stmt.setString(7, contact);
-            stmt.setString(8, gender);
-            stmt.setString(9, address);
-            stmt.setString(10, resumePath);
+            stmt.setDouble(8, cgpa);
+            stmt.setString(9, gender);
+            stmt.setString(10, address);
+            stmt.setString(11, fullResumePath);
 
             int rows = stmt.executeUpdate();
             if (rows > 0) {

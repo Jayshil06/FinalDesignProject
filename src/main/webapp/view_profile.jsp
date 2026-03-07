@@ -11,6 +11,7 @@
             background: linear-gradient(to right, #141e30, #243b55);
             color: #f5f5f5;
             padding: 40px;
+            animation: fadeInBody 0.7s ease;
         }
 
         .profile-container {
@@ -21,12 +22,14 @@
             max-width: 600px;
             margin: auto;
             box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+            animation: fadeInUp 0.8s ease;
         }
 
         h3 {
             text-align: center;
             color: #ffdd57;
             margin-bottom: 25px;
+            animation: slideDown 0.7s ease;
         }
 
         p {
@@ -35,6 +38,11 @@
             padding: 10px;
             border-radius: 8px;
             background-color: rgba(255, 255, 255, 0.05);
+            transition: background-color 0.25s ease;
+        }
+
+        p:hover {
+            background-color: rgba(255, 255, 255, 0.1);
         }
 
         strong {
@@ -56,6 +64,21 @@
             background-color: rgba(255, 0, 0, 0.1);
             color: #ff6b6b;
             border-radius: 10px;
+        }
+
+        @keyframes fadeInBody {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>

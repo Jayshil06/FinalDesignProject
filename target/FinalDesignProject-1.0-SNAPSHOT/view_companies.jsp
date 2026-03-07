@@ -10,12 +10,14 @@
             background: linear-gradient(to right, #141e30, #243b55);
             color: #f5f5f5;
             padding: 40px;
+            animation: fadeInBody 0.7s ease;
         }
 
         h3 {
             text-align: center;
             color: #ffdd57;
             margin-bottom: 25px;
+            animation: slideDown 0.7s ease;
         }
 
         .table-container {
@@ -25,6 +27,7 @@
             padding: 25px;
             box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
             overflow-x: auto;
+            animation: fadeInUp 0.8s ease;
         }
 
         table {
@@ -49,6 +52,10 @@
             background-color: rgba(255, 255, 255, 0.03);
         }
 
+        tr:hover td {
+            background-color: rgba(255, 255, 255, 0.06);
+        }
+
         a {
             color: #1e90ff;
             font-weight: bold;
@@ -63,6 +70,21 @@
             color: #ff6b6b;
             text-align: center;
             padding: 20px;
+        }
+
+        @keyframes fadeInBody {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>

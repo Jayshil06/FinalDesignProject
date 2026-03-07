@@ -2,8 +2,8 @@ package com.me.finaldesignproject;
 
 import java.io.IOException;
 import java.sql.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
 
 public class StudentProfileServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;

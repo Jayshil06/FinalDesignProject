@@ -10,6 +10,7 @@
             margin: 0;
             background: linear-gradient(to right, #141e30, #243b55);
             color: #fff;
+            animation: fadeInBody 0.7s ease;
         }
 
         .navbar {
@@ -20,6 +21,7 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             background: rgba(44, 62, 80, 0.95);
             backdrop-filter: blur(6px);
+            animation: slideDown 0.7s ease;
         }
 
         .navbar-left, .navbar-right {
@@ -70,6 +72,16 @@
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
 }
 
+        @keyframes fadeInBody {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
 
         @media screen and (max-width: 768px) {
             .navbar {
@@ -101,16 +113,26 @@
                 event.preventDefault();
             }
         }
+
+        function loadSection(url, event) {
+            event.preventDefault();
+            try {
+                var frame = parent.document.getElementsByName("contentFrame")[0];
+                frame.src = url;
+            } catch (e) {
+                parent.frames["contentFrame"].location.href = url;
+            }
+        }
     </script>
 </head>
 <body>
     <div class="navbar">
         <div class="navbar-left">
             <h2>👨‍💼 Admin Panel</h2>
-            <a href="admin_home_content.jsp" target="contentFrame">Dashboard</a>
-            <a href="admin_student_details.jsp" target="contentFrame">Student Details</a>
-            <a href="admin_company_details.jsp" target="contentFrame">Company Details</a>
-            <a href="company_applications.jsp" target="contentFrame">Applications</a>
+            <a href="#" onclick="loadSection('admin_home_content.jsp', event)">Dashboard</a>
+            <a href="#" onclick="loadSection('admin_student_details.jsp', event)">Student Details</a>
+            <a href="#" onclick="loadSection('admin_company_details.jsp', event)">Company Details</a>
+            <a href="#" onclick="loadSection('company_applications.jsp', event)">Applications</a>
         </div>
         <div class="navbar-right">
             <form action="AdminLogoutServlet" method="get" style="margin: 0;" onsubmit="confirmLogout(event);">

@@ -1,5 +1,5 @@
 <%@ page import="java.sql.*" %>
-<%@ page import="javax.servlet.http.*,javax.servlet.*,javax.servlet.annotation.*" %>
+<%@ page import="jakarta.servlet.http.*,jakarta.servlet.*,jakarta.servlet.annotation.*" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <!DOCTYPE html>
@@ -16,6 +16,7 @@
             color: #f0f0f0;
             margin: 0;
             padding: 40px 30px;
+            animation: fadeInBody 0.7s ease;
         }
 
         h2 {
@@ -23,6 +24,7 @@
             text-align: center;
             font-size: 34px;
             margin-bottom: 30px;
+            animation: slideDown 0.7s ease;
         }
 
         table {
@@ -34,6 +36,7 @@
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+            animation: fadeInUp 0.8s ease;
         }
 
         th, td {
@@ -49,6 +52,11 @@
 
         td {
             color: #e0e0e0;
+            transition: background-color 0.25s ease;
+        }
+
+        tr:hover td {
+            background-color: rgba(255, 255, 255, 0.05);
         }
 
         a {
@@ -86,6 +94,7 @@
             margin: 30px auto;
             max-width: 700px;
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+            animation: fadeInUp 0.8s ease;
         }
 
         .form-section h3 {
@@ -110,6 +119,21 @@
 
         form {
             display: inline;
+        }
+
+        @keyframes fadeInBody {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         @media screen and (max-width: 768px) {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="4.0" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee                              http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd">
+<web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
     <!-- Student Servlets -->
     <servlet>
         <servlet-name>StudentLoginServlet</servlet-name>
@@ -79,6 +79,23 @@
         <servlet-name>DownloadResumeServlet</servlet-name>
         <servlet-class>com.me.finaldesignproject.DownloadResumeServlet</servlet-class>
     </servlet>
+    <!-- Company Servlets -->
+    <servlet>
+        <servlet-name>CompanyRegisterServlet</servlet-name>
+        <servlet-class>com.me.finaldesignproject.CompanyRegisterServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CompanyLoginServlet</servlet-name>
+        <servlet-class>com.me.finaldesignproject.CompanyLoginServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>PostJobServlet</servlet-name>
+        <servlet-class>com.me.finaldesignproject.PostJobServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CompanyLogoutServlet</servlet-name>
+        <servlet-class>com.me.finaldesignproject.CompanyLogoutServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>StudentLoginServlet</servlet-name>
         <url-pattern>/StudentLoginServlet</url-pattern>
@@ -155,6 +172,22 @@
     <servlet-mapping>
         <servlet-name>DownloadResumeServlet</servlet-name>
         <url-pattern>/DownloadResumeServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CompanyRegisterServlet</servlet-name>
+        <url-pattern>/CompanyRegisterServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CompanyLoginServlet</servlet-name>
+        <url-pattern>/CompanyLoginServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PostJobServlet</servlet-name>
+        <url-pattern>/PostJobServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CompanyLogoutServlet</servlet-name>
+        <url-pattern>/CompanyLogoutServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>

@@ -3,8 +3,8 @@ package com.me.finaldesignproject;
 import java.io.*;
 import java.sql.*;
 import java.util.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
 
 public class CompanyListServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;

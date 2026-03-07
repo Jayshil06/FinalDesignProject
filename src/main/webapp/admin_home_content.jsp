@@ -12,6 +12,7 @@
             margin: 0;
             padding: 50px 30px;
             text-align: center;
+            animation: fadeInBody 0.7s ease;
         }
 
         .welcome {
@@ -23,12 +24,14 @@
             padding: 60px 40px;
             border-radius: 18px;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+            animation: fadeInUp 0.8s ease;
         }
 
         .welcome h1 {
             color: #f9ca24;
             font-size: 38px;
             margin-bottom: 25px;
+            animation: slideDown 0.7s ease;
         }
 
         .welcome p {
@@ -53,6 +56,21 @@
             margin-top: 60px;
             font-size: 13px;
             color: #ccc;
+        }
+
+        @keyframes fadeInBody {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>

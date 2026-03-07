@@ -232,6 +232,13 @@
             </div>
 
             <div class="form-group">
+                <label>CGPA</label>
+                <input type="number" name="cgpa" step="0.01" min="0" max="10" placeholder="e.g. 8.25" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
                 <label>Gender</label>
                 <select name="gender" required>
                     <option value="">Select Gender</option>

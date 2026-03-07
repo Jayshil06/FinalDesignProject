@@ -100,8 +100,23 @@
     <h2><%= rs.getString("company_name") %></h2>
     <p><strong>Email:</strong> <%= rs.getString("email") %></p>
     <p><strong>Posted On:</strong> <%= rs.getTimestamp("posted_date") %></p>
-    <p><strong>Job Description:</strong><br><%= rs.getString("job_description").replaceAll("\n", "<br>") %></p>
-    <p><strong>Other Details:</strong><br><%= rs.getString("details").replaceAll("\n", "<br>") %></p>
+    <%
+        String jobDescription = rs.getString("job_description");
+        if (jobDescription == null) {
+            jobDescription = "Not provided";
+        } else {
+            jobDescription = jobDescription.replaceAll("\n", "<br>");
+        }
+
+        String details = rs.getString("details");
+        if (details == null) {
+            details = "Not provided";
+        } else {
+            details = details.replaceAll("\n", "<br>");
+        }
+    %>
+    <p><strong>Job Description:</strong><br><%= jobDescription %></p>
+    <p><strong>Other Details:</strong><br><%= details %></p>
 
     <div class="button-group">
         <a class="apply-btn" href="javascript:void(0);" onclick="openApplyForm('<%= rs.getString("company_id") %>')">Apply Now</a>

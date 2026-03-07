@@ -1,5 +1,5 @@
 <%@ page import="java.sql.*" %>
-<%@ page import="javax.servlet.*,javax.servlet.http.*,javax.servlet.annotation.*" %>
+<%@ page import="jakarta.servlet.*,jakarta.servlet.http.*,jakarta.servlet.annotation.*" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -13,12 +13,14 @@
             color: #f0f0f0;
             padding: 40px;
             text-align: center;
+            animation: fadeInBody 0.7s ease;
         }
 
         h2 {
             font-size: 32px;
             color: #f9ca24;
             margin-bottom: 40px;
+            animation: slideDown 0.7s ease;
         }
 
         h3 {
@@ -36,6 +38,7 @@
             backdrop-filter: blur(4px);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
             border-radius: 8px;
+            animation: fadeInUp 0.8s ease;
         }
 
         th, td {
@@ -51,6 +54,10 @@
 
         tr:nth-child(even) {
             background-color: rgba(255, 255, 255, 0.04);
+        }
+
+        tr:hover td {
+            background-color: rgba(255, 255, 255, 0.06);
         }
 
         p {
@@ -89,6 +96,21 @@
         .error {
             color: #ff7675;
             font-weight: bold;
+        }
+
+        @keyframes fadeInBody {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>

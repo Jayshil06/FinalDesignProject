@@ -158,6 +158,7 @@
     <div class="role-box">
         <a href="admin_login.jsp" class="btn admin-btn">Admin Login</a>
         <a href="student_login.jsp" class="btn student-btn">Student Login</a>
+        <a href="company_login.jsp" class="btn admin-btn">Company Login</a>
     </div>
 
 </body>
