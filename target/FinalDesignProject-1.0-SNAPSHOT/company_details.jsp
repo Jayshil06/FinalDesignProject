@@ -108,15 +108,8 @@
             jobDescription = jobDescription.replaceAll("\n", "<br>");
         }
 
-        String details = rs.getString("details");
-        if (details == null) {
-            details = "Not provided";
-        } else {
-            details = details.replaceAll("\n", "<br>");
-        }
     %>
     <p><strong>Job Description:</strong><br><%= jobDescription %></p>
-    <p><strong>Other Details:</strong><br><%= details %></p>
 
     <div class="button-group">
         <a class="apply-btn" href="javascript:void(0);" onclick="openApplyForm('<%= rs.getString("company_id") %>')">Apply Now</a>

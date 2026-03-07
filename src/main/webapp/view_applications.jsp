@@ -138,7 +138,6 @@
                 <th>Branch</th>
                 <th>CGPA</th>
                 <th>Resume</th>
-                <th>Status</th>
             </tr>
             <%
                 while (rs.next()) {
@@ -165,7 +164,6 @@
                         }
                     %>
                 </td>
-                <td><%= rs.getString("status") %></td>
             </tr>
             <%
                 }

@@ -80,7 +80,7 @@
             color: #ffd700;
         }
 
-        input[type="text"], input[type="submit"] {
+        input[type="text"], input[type="number"], input[type="submit"] {
             width: 100%;
             padding: 10px;
             margin-top: 5px;
