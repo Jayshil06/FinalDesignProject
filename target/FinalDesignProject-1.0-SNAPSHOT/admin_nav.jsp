@@ -130,6 +130,7 @@
         <div class="navbar-left">
             <h2>👨‍💼 Admin Panel</h2>
             <a href="#" onclick="loadSection('admin_home_content.jsp', event)">Dashboard</a>
+            <a href="#" onclick="loadSection('AdminAnalyticsServlet', event)">Analytics</a>
             <a href="#" onclick="loadSection('admin_student_details.jsp', event)">Student Details</a>
             <a href="#" onclick="loadSection('admin_company_details.jsp', event)">Company Details</a>
             <a href="#" onclick="loadSection('company_applications.jsp', event)">Applications</a>

@@ -147,14 +147,33 @@
                 ResultSet appRs = appPs.executeQuery();
 
                 int count = 0;
-                out.println("<table><tr><th>Enrollment No</th><th>Student Name</th><th>Email</th><th>Applied On</th></tr>");
+                out.println("<table><tr><th>Enrollment No</th><th>Student Name</th><th>Email</th><th>Applied On</th><th>Status</th><th>Action</th></tr>");
                 while (appRs.next()) {
                     count++;
+                    String enrollment = appRs.getString("enrollment_no");
+                    String status = appRs.getString("status");
+                    if (status == null) status = "Applied";
+                    
                     out.println("<tr>");
-                    out.println("<td>" + appRs.getString("enrollment_no") + "</td>");
+                    out.println("<td>" + enrollment + "</td>");
                     out.println("<td>" + appRs.getString("full_name") + "</td>");
                     out.println("<td>" + appRs.getString("email") + "</td>");
                     out.println("<td>" + appRs.getTimestamp("application_date") + "</td>");
+                    out.println("<td>" + status + "</td>");
+                    out.println("<td>");
+                    out.println("<form action='UpdateApplicationStatusServlet' method='post' style='display:inline; margin:0;'>");
+                    out.println("<input type='hidden' name='enrollment_no' value='" + enrollment + "'>");
+                    out.println("<input type='hidden' name='company_id' value='" + companyId + "'>");
+                    out.println("<select name='status' style='padding:5px; border-radius:4px;'>");
+                    out.println("<option value='Applied' " + (status.equals("Applied") ? "selected" : "") + ">Applied</option>");
+                    out.println("<option value='Shortlisted' " + (status.equals("Shortlisted") ? "selected" : "") + ">Shortlisted</option>");
+                    out.println("<option value='Placed' " + (status.equals("Placed") ? "selected" : "") + ">Placed</option>");
+                    out.println("<option value='Rejected' " + (status.equals("Rejected") ? "selected" : "") + ">Rejected</option>");
+                    out.println("</select>");
+                    out.println("<input type='number' name='salary_offered' placeholder='Salary' style='width:80px; padding:5px; border-radius:4px;'>");
+                    out.println("<input type='submit' value='Update' style='padding:5px 10px; background:#00b894; color:white; border:none; border-radius:4px; cursor:pointer;'>");
+                    out.println("</form>");
+                    out.println("</td>");
                     out.println("</tr>");
                 }
                 out.println("</table>");

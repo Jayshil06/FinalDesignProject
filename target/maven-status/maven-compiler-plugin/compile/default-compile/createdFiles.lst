@@ -7,6 +7,7 @@ com\me\finaldesignproject\CompanyListServlet.class
 com\me\finaldesignproject\JakartaRestConfiguration.class
 com\me\finaldesignproject\UpdateStudentProfileServlet.class
 com\me\finaldesignproject\CompanyApplicationsServlet.class
+com\me\finaldesignproject\AdminAnalyticsServlet.class
 com\me\finaldesignproject\MyApplicationsServlet$Application.class
 com\me\finaldesignproject\AdminStudentListServlet$Student.class
 com\me\finaldesignproject\CompanyLoginServlet.class
@@ -18,7 +19,9 @@ com\me\finaldesignproject\resources\JakartaEE8Resource.class
 com\me\finaldesignproject\StudentLoginServlet.class
 com\me\finaldesignproject\DeleteStudentServlet.class
 com\me\finaldesignproject\PostJobServlet.class
+com\me\finaldesignproject\UpdateApplicationStatusServlet.class
 com\me\finaldesignproject\DeleteCompanyServlet.class
+com\me\finaldesignproject\DatabaseInitializerServlet.class
 com\me\finaldesignproject\MyApplicationsServlet.class
 com\me\finaldesignproject\StudentRegisterServlet.class
 com\me\finaldesignproject\DownloadResumeServlet.class

@@ -83,6 +83,18 @@
         <servlet-name>DownloadResumeServlet</servlet-name>
         <servlet-class>com.me.finaldesignproject.DownloadResumeServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AdminAnalyticsServlet</servlet-name>
+        <servlet-class>com.me.finaldesignproject.AdminAnalyticsServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdateApplicationStatusServlet</servlet-name>
+        <servlet-class>com.me.finaldesignproject.UpdateApplicationStatusServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DatabaseInitializerServlet</servlet-name>
+        <servlet-class>com.me.finaldesignproject.DatabaseInitializerServlet</servlet-class>
+    </servlet>
     <!-- Company Servlets -->
     <servlet>
         <servlet-name>CompanyRegisterServlet</servlet-name>
@@ -100,6 +112,18 @@
         <servlet-name>CompanyLogoutServlet</servlet-name>
         <servlet-class>com.me.finaldesignproject.CompanyLogoutServlet</servlet-class>
     </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminAnalyticsServlet</servlet-name>
+        <url-pattern>/AdminAnalyticsServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateApplicationStatusServlet</servlet-name>
+        <url-pattern>/UpdateApplicationStatusServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DatabaseInitializerServlet</servlet-name>
+        <url-pattern>/DatabaseInitializerServlet</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>StudentLoginServlet</servlet-name>
         <url-pattern>/StudentLoginServlet</url-pattern>
