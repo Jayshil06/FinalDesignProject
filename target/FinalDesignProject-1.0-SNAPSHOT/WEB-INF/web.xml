@@ -14,6 +14,10 @@
         <servlet-class>com.me.finaldesignproject.StudentProfileServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>UpdateStudentProfileServlet</servlet-name>
+        <servlet-class>com.me.finaldesignproject.UpdateStudentProfileServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>CompanyListServlet</servlet-name>
         <servlet-class>com.me.finaldesignproject.CompanyListServlet</servlet-class>
     </servlet>
@@ -107,6 +111,10 @@
     <servlet-mapping>
         <servlet-name>StudentProfileServlet</servlet-name>
         <url-pattern>/StudentProfileServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateStudentProfileServlet</servlet-name>
+        <url-pattern>/UpdateStudentProfileServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>CompanyListServlet</servlet-name>

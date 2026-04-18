@@ -5,6 +5,7 @@ com\me\finaldesignproject\AdminCompanyListServlet.class
 com\me\finaldesignproject\CompanyDetailsServlet.class
 com\me\finaldesignproject\CompanyListServlet.class
 com\me\finaldesignproject\JakartaRestConfiguration.class
+com\me\finaldesignproject\UpdateStudentProfileServlet.class
 com\me\finaldesignproject\CompanyApplicationsServlet.class
 com\me\finaldesignproject\MyApplicationsServlet$Application.class
 com\me\finaldesignproject\AdminStudentListServlet$Student.class
