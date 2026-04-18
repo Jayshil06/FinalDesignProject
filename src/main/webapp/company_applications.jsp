@@ -139,9 +139,9 @@
                 out.println("<hr>");
                 out.println("<h3>🏢 " + companyName + "</h3>");
 
-                String appQuery = "SELECT a.enrollment_no, s.full_name, s.email, a.application_date " +
-                                  "FROM applications a JOIN students s ON a.enrollment_no = s.enrollment_no " +
-                                  "WHERE a.company_id = ?";
+                String appQuery = "SELECT a.enrollment_no, s.full_name, s.email, a.application_date, a.status " +
+                                   "FROM applications a JOIN students s ON a.enrollment_no = s.enrollment_no " +
+                                   "WHERE a.company_id = ?";
                 PreparedStatement appPs = conn.prepareStatement(appQuery);
                 appPs.setInt(1, companyId);
                 ResultSet appRs = appPs.executeQuery();
