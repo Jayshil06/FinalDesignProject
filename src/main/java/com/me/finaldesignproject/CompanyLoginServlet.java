@@ -1,10 +1,13 @@
 package com.me.finaldesignproject;
 
+import com.me.finaldesignproject.util.JwtUtil;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.Map;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -36,10 +39,28 @@ public class CompanyLoginServlet extends HttpServlet {
             rs = ps.executeQuery();
 
             if (rs.next()) {
+                int companyId = rs.getInt("company_id");
+                String companyName = rs.getString("company_name");
+                String companyEmail = rs.getString("email");
+
+                // Create JWT token
+                Map<String, Object> claims = new HashMap<>();
+                claims.put("role", "company");
+                claims.put("user_id", companyId);
+                claims.put("name", companyName);
+
+                String token = JwtUtil.generateToken(email, claims);
+
+                // Set token in response header
+                response.setHeader("Authorization", "Bearer " + token);
+
+                // Also set in session for backward compatibility
                 HttpSession session = request.getSession();
-                session.setAttribute("company_id", rs.getInt("company_id"));
-                session.setAttribute("company_name", rs.getString("company_name"));
-                session.setAttribute("company_email", rs.getString("email"));
+                session.setAttribute("company_id", companyId);
+                session.setAttribute("company_name", companyName);
+                session.setAttribute("company_email", companyEmail);
+                session.setAttribute("jwt_token", token);
+
                 response.sendRedirect("company_home.jsp");
             } else {
                 request.setAttribute("error", "Invalid email or password.");

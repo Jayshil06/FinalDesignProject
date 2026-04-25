@@ -15,9 +15,15 @@ public class CompanyLogoutServlet extends HttpServlet {
         if (session != null) {
             session.invalidate();
         }
+
+        // Clear JWT tokens from client-side storage
         response.setContentType("text/html");
         response.getWriter().println("<html><body>");
-        response.getWriter().println("<script>window.top.location.href = 'index.html';</script>");
+        response.getWriter().println("<script>");
+        response.getWriter().println("localStorage.removeItem('jwt_token');");
+        response.getWriter().println("sessionStorage.removeItem('jwt_token');");
+        response.getWriter().println("window.top.location.href = 'index.html';");
+        response.getWriter().println("</script>");
         response.getWriter().println("</body></html>");
     }
 

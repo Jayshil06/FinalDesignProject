@@ -7,6 +7,7 @@ com\me\finaldesignproject\CompanyListServlet.class
 com\me\finaldesignproject\JakartaRestConfiguration.class
 com\me\finaldesignproject\UpdateStudentProfileServlet.class
 com\me\finaldesignproject\CompanyApplicationsServlet.class
+com\me\finaldesignproject\util\JwtUtil.class
 com\me\finaldesignproject\AdminAnalyticsServlet.class
 com\me\finaldesignproject\MyApplicationsServlet$Application.class
 com\me\finaldesignproject\AdminStudentListServlet$Student.class
@@ -15,6 +16,7 @@ com\me\finaldesignproject\AddCompanyServlet.class
 com\me\finaldesignproject\StudentProfileServlet.class
 com\me\finaldesignproject\AdminLogoutServlet.class
 com\me\finaldesignproject\CompanyLogoutServlet.class
+com\me\finaldesignproject\filter\JwtAuthenticationFilter.class
 com\me\finaldesignproject\resources\JakartaEE8Resource.class
 com\me\finaldesignproject\StudentLoginServlet.class
 com\me\finaldesignproject\DeleteStudentServlet.class

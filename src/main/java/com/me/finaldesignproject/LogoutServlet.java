@@ -9,15 +9,22 @@ public class LogoutServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         // Invalidate the current session
         HttpSession session = request.getSession(false); // avoid creating a new session
         if (session != null) {
             session.invalidate();
         }
 
-        // Redirect to index.html
-        response.sendRedirect("index.html");
+        // Clear JWT tokens from client-side storage
+        response.setContentType("text/html");
+        response.getWriter().println("<html><body>");
+        response.getWriter().println("<script>");
+        response.getWriter().println("localStorage.removeItem('jwt_token');");
+        response.getWriter().println("sessionStorage.removeItem('jwt_token');");
+        response.getWriter().println("window.location.href = 'index.html';");
+        response.getWriter().println("</script>");
+        response.getWriter().println("</body></html>");
     }
 
     // Optional: also handle POST if needed

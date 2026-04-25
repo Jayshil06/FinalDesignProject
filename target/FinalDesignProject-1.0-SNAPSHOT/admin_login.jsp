@@ -168,5 +168,7 @@
         <input type="submit" value="Login">
     </form>
 
+    <%@ include file="includes/jwt-auth.jsp" %>
+
 </body>
 </html>

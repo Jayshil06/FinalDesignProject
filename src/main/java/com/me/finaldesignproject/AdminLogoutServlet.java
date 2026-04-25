@@ -18,10 +18,14 @@ public class AdminLogoutServlet extends HttpServlet {
             session.invalidate();
         }
 
-        // Redirect out of the frame to index.html
+        // Clear JWT tokens from client-side storage
         response.setContentType("text/html");
         response.getWriter().println("<html><body>");
-        response.getWriter().println("<script>window.top.location.href = 'index.html';</script>");
+        response.getWriter().println("<script>");
+        response.getWriter().println("localStorage.removeItem('jwt_token');");
+        response.getWriter().println("sessionStorage.removeItem('jwt_token');");
+        response.getWriter().println("window.top.location.href = 'index.html';");
+        response.getWriter().println("</script>");
         response.getWriter().println("</body></html>");
     }
 

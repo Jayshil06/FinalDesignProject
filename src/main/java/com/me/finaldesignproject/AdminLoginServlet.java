@@ -1,9 +1,12 @@
 package com.me.finaldesignproject;
 
+import com.me.finaldesignproject.util.JwtUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AdminLoginServlet extends HttpServlet {
 
@@ -28,9 +31,26 @@ public class AdminLoginServlet extends HttpServlet {
 
             if (rs.next()) {
                 // Successful login
+                int adminId = rs.getInt("admin_id");
+                String adminName = rs.getString("name");
+
+                // Create JWT token
+                Map<String, Object> claims = new HashMap<>();
+                claims.put("role", "admin");
+                claims.put("user_id", adminId);
+                claims.put("name", adminName);
+
+                String token = JwtUtil.generateToken(email, claims);
+
+                // Set token in response header
+                response.setHeader("Authorization", "Bearer " + token);
+
+                // Also set in session for backward compatibility
                 HttpSession session = request.getSession();
-                session.setAttribute("admin_id", rs.getInt("admin_id"));
-                session.setAttribute("admin_name", rs.getString("name"));
+                session.setAttribute("admin_id", adminId);
+                session.setAttribute("admin_name", adminName);
+                session.setAttribute("jwt_token", token);
+
                 response.sendRedirect("admin_home.jsp");
             } else {
                 // Failed login

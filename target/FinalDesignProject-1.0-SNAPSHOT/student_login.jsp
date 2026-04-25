@@ -176,5 +176,7 @@
         <p class="signup-link">Don't have an account? <a href="student_register.jsp">Create one</a></p>
     </form>
 
+    <%@ include file="includes/jwt-auth.jsp" %>
+
 </body>
 </html>

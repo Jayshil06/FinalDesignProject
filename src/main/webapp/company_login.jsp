@@ -168,5 +168,7 @@
             <a href="company_register.jsp">New recruiter? Register</a>
         </div>
     </div>
+
+    <%@ include file="includes/jwt-auth.jsp" %>
 </body>
 </html>
