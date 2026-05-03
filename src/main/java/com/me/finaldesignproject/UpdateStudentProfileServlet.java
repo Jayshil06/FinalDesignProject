@@ -1,5 +1,6 @@
 package com.me.finaldesignproject;
 
+import com.me.finaldesignproject.util.DBUtil;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,7 +10,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.Date;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLIntegrityConstraintViolationException;
@@ -30,9 +30,6 @@ import jakarta.servlet.http.Part;
 )
 public class UpdateStudentProfileServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/design_engineering_portal";
-    private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "root";
     private static final String RESUME_UPLOAD_DIR = "C:" + File.separator + "placement_resumes";
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -46,14 +43,10 @@ public class UpdateStudentProfileServlet extends HttpServlet {
 
         request.setCharacterEncoding("UTF-8");
         String sessionEmail = (String) session.getAttribute("email");
+        Connection conn = null;
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new ServletException("MySQL JDBC Driver not found.", e);
-        }
-
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+            conn = DBUtil.getConnection();
             Map<String, String> currentStudent = loadCurrentStudent(conn, sessionEmail);
             if (currentStudent == null) {
                 session.setAttribute("profileError", "Unable to find your profile.");
@@ -132,7 +125,10 @@ public class UpdateStudentProfileServlet extends HttpServlet {
             session.setAttribute("profileEditMode", Boolean.TRUE);
             response.sendRedirect("StudentProfileServlet");
         } catch (Exception e) {
+            getServletContext().log("Error in UpdateStudentProfileServlet", e);
             throw new ServletException("Unable to update student profile.", e);
+        } finally {
+            DBUtil.close(conn, null);
         }
     }
 

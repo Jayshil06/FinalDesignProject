@@ -1,5 +1,6 @@
 package com.me.finaldesignproject;
 
+import com.me.finaldesignproject.util.DBUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import java.io.IOException;
@@ -25,21 +26,20 @@ public class UpdateApplicationStatusServlet extends HttpServlet {
             }
         }
 
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/design_engineering_portal", "root", "root");
+            conn = DBUtil.getConnection();
 
             String sql = "UPDATE applications SET status = ?, salary_offered = ? WHERE enrollment_no = ? AND company_id = ?";
-            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, status);
             pstmt.setDouble(2, salaryOffered);
             pstmt.setString(3, enrollmentNo);
             pstmt.setInt(4, companyId);
 
             int rows = pstmt.executeUpdate();
-            pstmt.close();
-            conn.close();
 
             if (rows > 0) {
                 response.sendRedirect("CompanyApplicationsServlet?id=" + companyId + "&success=updated");
@@ -48,8 +48,10 @@ public class UpdateApplicationStatusServlet extends HttpServlet {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            getServletContext().log("Error in UpdateApplicationStatusServlet", e);
             response.sendRedirect("CompanyApplicationsServlet?id=" + companyId + "&error=" + e.getMessage());
+        } finally {
+            DBUtil.close(conn, pstmt);
         }
     }
 }

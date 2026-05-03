@@ -1,5 +1,6 @@
 package com.me.finaldesignproject;
 
+import com.me.finaldesignproject.util.DBUtil;
 import com.me.finaldesignproject.util.JwtUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -31,20 +32,21 @@ public class CompanyApplicationsServlet extends HttpServlet {
             }
 
             List<Map<String, String>> applications = new ArrayList<>();
+            Connection conn = null;
+            PreparedStatement ps = null;
+            ResultSet rs = null;
 
             try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                Connection conn = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/design_engineering_portal", "root", "root");
+                conn = DBUtil.getConnection();
 
                 String sql = "SELECT a.*, s.name, s.email, s.contact_no, s.branch, s.semester " +
                              "FROM applications a " +
                              "JOIN students s ON a.enrollment_no = s.enrollment_no " +
                              "WHERE a.company_id = ?";
 
-                PreparedStatement ps = conn.prepareStatement(sql);
+                ps = conn.prepareStatement(sql);
                 ps.setInt(1, companyId);
-                ResultSet rs = ps.executeQuery();
+                rs = ps.executeQuery();
 
                 while (rs.next()) {
                     Map<String, String> app = new HashMap<>();
@@ -58,13 +60,11 @@ public class CompanyApplicationsServlet extends HttpServlet {
                     applications.add(app);
                 }
 
-                rs.close();
-                ps.close();
-                conn.close();
-
             } catch (Exception e) {
-                e.printStackTrace();
+                getServletContext().log("Error in CompanyApplicationsServlet", e);
                 request.setAttribute("message", "Error: " + e.getMessage());
+            } finally {
+                DBUtil.close(conn, ps, rs);
             }
 
             request.setAttribute("applications", applications);

@@ -31,3 +31,4 @@ com\me\finaldesignproject\LogoutServlet.class
 com\me\finaldesignproject\UpdateCompanyServlet.class
 com\me\finaldesignproject\ApplyCompanyServlet.class
 com\me\finaldesignproject\UpdateStudentServlet.class
+com\me\finaldesignproject\util\DBUtil.class

@@ -1,5 +1,6 @@
 package com.me.finaldesignproject;
 
+import com.me.finaldesignproject.util.DBUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import java.io.IOException;
@@ -40,20 +41,19 @@ public class ApplyCompanyServlet extends HttpServlet {
         boolean isSuccess = false;
         boolean isDuplicate = false;
         Connection conn = null;
+        PreparedStatement updateStudent = null;
+        PreparedStatement pstmt = null;
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/design_engineering_portal", "root", "root");
+            conn = DBUtil.getConnection();
 
-            PreparedStatement updateStudent = conn.prepareStatement(
+            updateStudent = conn.prepareStatement(
                     "UPDATE students SET cgpa = ? WHERE enrollment_no = ?");
             updateStudent.setDouble(1, cgpa);
             updateStudent.setString(2, enrollmentNo);
             updateStudent.executeUpdate();
-            updateStudent.close();
 
-            PreparedStatement pstmt = conn.prepareStatement(
+            pstmt = conn.prepareStatement(
                     "INSERT INTO applications (enrollment_no, company_id, application_date) VALUES (?, ?, ?)");
             pstmt.setString(1, enrollmentNo);
             pstmt.setInt(2, companyId);
@@ -62,18 +62,14 @@ public class ApplyCompanyServlet extends HttpServlet {
             int rows = pstmt.executeUpdate();
             isSuccess = rows > 0;
 
-            pstmt.close();
         } catch (SQLIntegrityConstraintViolationException dup) {
             isDuplicate = true;
         } catch (Exception e) {
+            getServletContext().log("Error in ApplyCompanyServlet", e);
             isSuccess = false;
         } finally {
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (Exception ignored) {
-            }
+            DBUtil.close(null, updateStudent);
+            DBUtil.close(conn, pstmt);
         }
 
         response.setContentType("text/html");

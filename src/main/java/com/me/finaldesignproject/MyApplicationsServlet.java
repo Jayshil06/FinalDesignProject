@@ -1,5 +1,6 @@
 package com.me.finaldesignproject;
 
+import com.me.finaldesignproject.util.DBUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import java.io.IOException;
@@ -28,21 +29,22 @@ public class MyApplicationsServlet extends HttpServlet {
         int studentId = (Integer) session.getAttribute("student_id");
 
         List<Application> applications = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/design_engineering_portal", "root", "");
+            conn = DBUtil.getConnection();
 
             String sql = "SELECT a.application_id, a.apply_date, c.company_name, c.position " +
                          "FROM applications a " +
                          "JOIN companies c ON a.company_id = c.company_id " +
                          "WHERE a.student_id = ?";
 
-            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, studentId);
 
-            ResultSet rs = pstmt.executeQuery();
+            rs = pstmt.executeQuery();
 
             while (rs.next()) {
                 Application app = new Application();
@@ -53,12 +55,11 @@ public class MyApplicationsServlet extends HttpServlet {
                 applications.add(app);
             }
 
-            rs.close();
-            pstmt.close();
-            conn.close();
-
         } catch (Exception e) {
+            getServletContext().log("Error in MyApplicationsServlet", e);
             request.setAttribute("error", "Database error: " + e.getMessage());
+        } finally {
+            DBUtil.close(conn, pstmt, rs);
         }
 
         request.setAttribute("applications", applications);

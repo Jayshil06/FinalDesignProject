@@ -1,9 +1,11 @@
 package com.me.finaldesignproject;
 
+import com.me.finaldesignproject.util.DBUtil;
+import org.mindrot.jbcrypt.BCrypt;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -37,16 +39,17 @@ public class CompanyRegisterServlet extends HttpServlet {
         PreparedStatement ps = null;
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/design_engineering_portal", "root", "root");
+            conn = DBUtil.getConnection();
 
             String sql = "INSERT INTO companies (company_name, email, password, job_role, cgpa_required, job_description, posted_date) "
                     + "VALUES (?, ?, ?, ?, ?, ?, NOW())";
+
+            String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+
             ps = conn.prepareStatement(sql);
             ps.setString(1, companyName);
             ps.setString(2, email);
-            ps.setString(3, password);
+            ps.setString(3, hashedPassword);
             ps.setString(4, jobRole);
             ps.setDouble(5, cgpaRequired);
             ps.setString(6, jobDescription);
@@ -64,21 +67,13 @@ public class CompanyRegisterServlet extends HttpServlet {
             request.setAttribute("error", "Email already exists. Please use a different email.");
             RequestDispatcher rd = request.getRequestDispatcher("company_register.jsp");
             rd.forward(request, response);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            getServletContext().log("Database error in CompanyRegisterServlet", e);
             request.setAttribute("error", "Error: " + e.getMessage());
             RequestDispatcher rd = request.getRequestDispatcher("company_register.jsp");
             rd.forward(request, response);
         } finally {
-            try {
-                if (ps != null) {
-                    ps.close();
-                }
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (Exception ignored) {
-            }
+            DBUtil.close(conn, ps);
         }
     }
 }

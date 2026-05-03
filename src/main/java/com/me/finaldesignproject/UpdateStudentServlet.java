@@ -1,5 +1,6 @@
 package com.me.finaldesignproject;
 
+import com.me.finaldesignproject.util.DBUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import java.io.IOException;
@@ -19,16 +20,19 @@ public class UpdateStudentServlet extends HttpServlet {
         String gender = request.getParameter("gender");
         String address = request.getParameter("address");
 
+        Connection conn = null;
+        PreparedStatement selectPs = null;
+        PreparedStatement updatePs = null;
+        ResultSet rs = null;
+
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/design_engineering_portal", "root", "root");
+            conn = DBUtil.getConnection();
 
             // Step 1: Get current data for the student
             String selectSql = "SELECT * FROM students WHERE enrollment_no = ?";
-            PreparedStatement selectPs = conn.prepareStatement(selectSql);
+            selectPs = conn.prepareStatement(selectSql);
             selectPs.setString(1, enrollmentNo);
-            ResultSet rs = selectPs.executeQuery();
+            rs = selectPs.executeQuery();
 
             if (rs.next()) {
                 if (name == null || name.trim().isEmpty()) {
@@ -53,12 +57,9 @@ public class UpdateStudentServlet extends HttpServlet {
                     address = rs.getString("address");
                 }
 
-                rs.close();
-                selectPs.close();
-
                 // Step 2: Update the student with filled or preserved values
                 String updateSql = "UPDATE students SET full_name=?, email=?, dob=?, contact=?, branch=?, gender=?, address=? WHERE enrollment_no=?";
-                PreparedStatement updatePs = conn.prepareStatement(updateSql);
+                updatePs = conn.prepareStatement(updateSql);
                 updatePs.setString(1, name);
                 updatePs.setString(2, email);
                 updatePs.setString(3, dob);
@@ -69,7 +70,6 @@ public class UpdateStudentServlet extends HttpServlet {
                 updatePs.setString(8, enrollmentNo);
 
                 int rowsUpdated = updatePs.executeUpdate();
-                updatePs.close();
 
                 if (rowsUpdated > 0) {
                     request.setAttribute("message", "Profile updated successfully!");
@@ -80,11 +80,12 @@ public class UpdateStudentServlet extends HttpServlet {
                 request.setAttribute("message", "Student not found.");
             }
 
-            conn.close();
-
         } catch (Exception e) {
-            e.printStackTrace();
+            getServletContext().log("Error in UpdateStudentServlet", e);
             request.setAttribute("message", "Error: " + e.getMessage());
+        } finally {
+            DBUtil.close(null, selectPs, rs);
+            DBUtil.close(conn, updatePs);
         }
 
         RequestDispatcher rd = request.getRequestDispatcher("admin_student_details.jsp");

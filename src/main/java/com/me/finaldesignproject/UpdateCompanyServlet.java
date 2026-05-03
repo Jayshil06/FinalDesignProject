@@ -1,5 +1,6 @@
 package com.me.finaldesignproject;
 
+import com.me.finaldesignproject.util.DBUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import java.io.IOException;
@@ -18,15 +19,18 @@ public class UpdateCompanyServlet extends HttpServlet {
         String jobDescription = request.getParameter("job_description");
         String details = request.getParameter("details");
 
+        Connection conn = null;
+        PreparedStatement selectStmt = null;
+        PreparedStatement updateStmt = null;
+        ResultSet rs = null;
+
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/design_engineering_portal", "root", "root");
+            conn = DBUtil.getConnection();
 
             String selectSql = "SELECT * FROM companies WHERE company_id = ?";
-            PreparedStatement selectStmt = conn.prepareStatement(selectSql);
+            selectStmt = conn.prepareStatement(selectSql);
             selectStmt.setInt(1, companyId);
-            ResultSet rs = selectStmt.executeQuery();
+            rs = selectStmt.executeQuery();
 
             if (rs.next()) {
                 if (name == null || name.trim().isEmpty()) {
@@ -42,20 +46,15 @@ public class UpdateCompanyServlet extends HttpServlet {
                     details = rs.getString("details");
                 }
 
-                rs.close();
-                selectStmt.close();
-
                 String updateSql = "UPDATE companies SET company_name = ?, email = ?, job_description = ?, details = ? WHERE company_id = ?";
-                PreparedStatement ps = conn.prepareStatement(updateSql);
-                ps.setString(1, name);
-                ps.setString(2, email);
-                ps.setString(3, jobDescription);
-                ps.setString(4, details);
-                ps.setInt(5, companyId);
+                updateStmt = conn.prepareStatement(updateSql);
+                updateStmt.setString(1, name);
+                updateStmt.setString(2, email);
+                updateStmt.setString(3, jobDescription);
+                updateStmt.setString(4, details);
+                updateStmt.setInt(5, companyId);
 
-                int rowsUpdated = ps.executeUpdate();
-                ps.close();
-                conn.close();
+                int rowsUpdated = updateStmt.executeUpdate();
 
                 if (rowsUpdated > 0) {
                     session.setAttribute("message", "✅ Company updated successfully.");
@@ -67,8 +66,11 @@ public class UpdateCompanyServlet extends HttpServlet {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            getServletContext().log("Error in UpdateCompanyServlet", e);
             session.setAttribute("message", "❌ Error: " + e.getMessage());
+        } finally {
+            DBUtil.close(null, selectStmt, rs);
+            DBUtil.close(conn, updateStmt);
         }
 
         response.sendRedirect("admin_company_details.jsp");

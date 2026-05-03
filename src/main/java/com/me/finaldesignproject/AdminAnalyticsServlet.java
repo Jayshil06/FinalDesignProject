@@ -1,5 +1,6 @@
 package com.me.finaldesignproject;
 
+import com.me.finaldesignproject.util.DBUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import java.io.IOException;
@@ -15,31 +16,33 @@ public class AdminAnalyticsServlet extends HttpServlet {
         double averageSalary = 0.0;
         List<Map<String, Object>> recruiterTrends = new ArrayList<>();
 
+        Connection conn = null;
+        Statement stmtRate = null;
+        ResultSet rsRate = null;
+        Statement stmtSalary = null;
+        ResultSet rsSalary = null;
+        Statement stmtTrends = null;
+        ResultSet rsTrends = null;
+
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/design_engineering_portal", "root", "root");
+            conn = DBUtil.getConnection();
 
             // 1. Calculate Placement Rate
             String rateSql = "SELECT (SELECT COUNT(DISTINCT enrollment_no) FROM applications WHERE status = 'Placed') * 100.0 / " +
                              "(SELECT COUNT(*) FROM students) as rate";
-            Statement stmtRate = conn.createStatement();
-            ResultSet rsRate = stmtRate.executeQuery(rateSql);
+            stmtRate = conn.createStatement();
+            rsRate = stmtRate.executeQuery(rateSql);
             if (rsRate.next()) {
                 placementRate = rsRate.getDouble("rate");
             }
-            rsRate.close();
-            stmtRate.close();
 
             // 2. Calculate Average Salary
             String salarySql = "SELECT AVG(salary_offered) as avg_salary FROM applications WHERE status = 'Placed'";
-            Statement stmtSalary = conn.createStatement();
-            ResultSet rsSalary = stmtSalary.executeQuery(salarySql);
+            stmtSalary = conn.createStatement();
+            rsSalary = stmtSalary.executeQuery(salarySql);
             if (rsSalary.next()) {
                 averageSalary = rsSalary.getDouble("avg_salary");
             }
-            rsSalary.close();
-            stmtSalary.close();
 
             // 3. Recruiter Trends (Placements per company)
             String trendsSql = "SELECT c.company_name, COUNT(a.enrollment_no) as placed_count " +
@@ -47,22 +50,22 @@ public class AdminAnalyticsServlet extends HttpServlet {
                                "WHERE a.status = 'Placed' " +
                                "GROUP BY c.company_id, c.company_name " +
                                "ORDER BY placed_count DESC";
-            Statement stmtTrends = conn.createStatement();
-            ResultSet rsTrends = stmtTrends.executeQuery(trendsSql);
+            stmtTrends = conn.createStatement();
+            rsTrends = stmtTrends.executeQuery(trendsSql);
             while (rsTrends.next()) {
                 Map<String, Object> trend = new HashMap<>();
                 trend.put("company_name", rsTrends.getString("company_name"));
                 trend.put("placed_count", rsTrends.getInt("placed_count"));
                 recruiterTrends.add(trend);
             }
-            rsTrends.close();
-            stmtTrends.close();
-
-            conn.close();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            getServletContext().log("Error in AdminAnalyticsServlet", e);
             request.setAttribute("error", "Error calculating analytics: " + e.getMessage());
+        } finally {
+            DBUtil.close(null, stmtRate, rsRate);
+            DBUtil.close(null, stmtSalary, rsSalary);
+            DBUtil.close(conn, stmtTrends, rsTrends);
         }
 
         request.setAttribute("placementRate", placementRate);

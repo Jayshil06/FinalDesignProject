@@ -1,5 +1,7 @@
 package com.me.finaldesignproject;
 
+import com.me.finaldesignproject.util.DBUtil;
+import org.mindrot.jbcrypt.BCrypt;
 import java.io.*;
 import java.nio.file.*;
 import java.sql.*;
@@ -78,18 +80,18 @@ public class StudentRegisterServlet extends HttpServlet {
         PreparedStatement stmt = null;
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/design_engineering_portal", "root", "root");
+            conn = DBUtil.getConnection();
 
             String sql = "INSERT INTO students (enrollment_no, full_name, email, password, dob, branch, contact, cgpa, gender, address, resume_path) "
                        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+            String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 
             stmt = conn.prepareStatement(sql);
             stmt.setString(1, enrollment_no);
             stmt.setString(2, full_name);
             stmt.setString(3, email);
-            stmt.setString(4, password);
+            stmt.setString(4, hashedPassword);
             stmt.setString(5, dob);
             stmt.setString(6, branch);
             stmt.setString(7, contact);
@@ -110,16 +112,11 @@ public class StudentRegisterServlet extends HttpServlet {
             request.setAttribute("error", "Enrollment No or Email already exists.");
             request.getRequestDispatcher("student_register.jsp").forward(request, response);
         } catch (Exception e) {
-            e.printStackTrace();
+            getServletContext().log("Error in StudentRegisterServlet", e);
             request.setAttribute("error", "Something went wrong: " + e.getMessage());
             request.getRequestDispatcher("student_register.jsp").forward(request, response);
         } finally {
-            try {
-                if (stmt != null) stmt.close();
-                if (conn != null) conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            DBUtil.close(conn, stmt);
         }
     }
 }

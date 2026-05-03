@@ -1,5 +1,6 @@
 package com.me.finaldesignproject;
 
+import com.me.finaldesignproject.util.DBUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import java.io.IOException;
@@ -12,15 +13,16 @@ public class AdminCompanyListServlet extends HttpServlet {
             throws ServletException, IOException {
 
         List<Map<String, String>> companyList = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/design_engineering_portal", "root", "root");
+            conn = DBUtil.getConnection();
 
             String sql = "SELECT * FROM companies";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
 
             while (rs.next()) {
                 Map<String, String> company = new HashMap<>();
@@ -34,13 +36,11 @@ public class AdminCompanyListServlet extends HttpServlet {
                 companyList.add(company);
             }
 
-            rs.close();
-            ps.close();
-            conn.close();
-
         } catch (Exception e) {
-            e.printStackTrace();
+            getServletContext().log("Error in AdminCompanyListServlet", e);
             request.setAttribute("error", "Error fetching company data: " + e.getMessage());
+        } finally {
+            DBUtil.close(conn, ps, rs);
         }
 
         request.setAttribute("companyList", companyList);

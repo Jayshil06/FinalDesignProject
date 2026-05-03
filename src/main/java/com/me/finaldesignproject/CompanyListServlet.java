@@ -1,5 +1,6 @@
 package com.me.finaldesignproject;
 
+import com.me.finaldesignproject.util.DBUtil;
 import java.io.*;
 import java.sql.*;
 import java.util.*;
@@ -8,9 +9,6 @@ import jakarta.servlet.http.*;
 
 public class CompanyListServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/design_engineering_portal";
-    private static final String DB_USER = "root";
-    private static final String DB_PASS = "root";
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -27,8 +25,7 @@ public class CompanyListServlet extends HttpServlet {
         List<Map<String, String>> companies = new ArrayList<>();
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
+            conn = DBUtil.getConnection();
 
             String sql = "SELECT * FROM companies ORDER BY posted_date DESC";
             stmt = conn.createStatement();
@@ -49,13 +46,11 @@ public class CompanyListServlet extends HttpServlet {
             dispatcher.forward(request, response);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            getServletContext().log("Error in CompanyListServlet", e);
             request.setAttribute("errorMessage", "Error fetching company list.");
             request.getRequestDispatcher("student_home.jsp").forward(request, response);
         } finally {
-            try { if (rs != null) rs.close(); } catch (Exception e) {}
-            try { if (stmt != null) stmt.close(); } catch (Exception e) {}
-            try { if (conn != null) conn.close(); } catch (Exception e) {}
+            DBUtil.close(conn, stmt, rs);
         }
     }
 }

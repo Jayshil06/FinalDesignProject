@@ -1,11 +1,13 @@
 package com.me.finaldesignproject;
 
+import com.me.finaldesignproject.util.DBUtil;
 import com.me.finaldesignproject.util.JwtUtil;
+import org.mindrot.jbcrypt.BCrypt;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import jakarta.servlet.RequestDispatcher;
@@ -28,64 +30,67 @@ public class CompanyLoginServlet extends HttpServlet {
         ResultSet rs = null;
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/design_engineering_portal", "root", "root");
+            conn = DBUtil.getConnection();
 
-            String sql = "SELECT company_id, company_name, email FROM companies WHERE email = ? AND password = ?";
+            String sql = "SELECT * FROM companies WHERE email = ?";
             ps = conn.prepareStatement(sql);
             ps.setString(1, email);
-            ps.setString(2, password);
             rs = ps.executeQuery();
 
             if (rs.next()) {
-                int companyId = rs.getInt("company_id");
-                String companyName = rs.getString("company_name");
-                String companyEmail = rs.getString("email");
+                String storedPassword = rs.getString("password");
+                boolean passwordMatch = false;
 
-                // Create JWT token
-                Map<String, Object> claims = new HashMap<>();
-                claims.put("role", "company");
-                claims.put("user_id", companyId);
-                claims.put("name", companyName);
+                try {
+                    // Try BCrypt check
+                    passwordMatch = BCrypt.checkpw(password, storedPassword);
+                } catch (IllegalArgumentException e) {
+                    // Fallback to plain text check for legacy passwords
+                    passwordMatch = password.equals(storedPassword);
+                }
 
-                String token = JwtUtil.generateToken(email, claims);
+                if (passwordMatch) {
+                    int companyId = rs.getInt("company_id");
+                    String companyName = rs.getString("company_name");
+                    String companyEmail = rs.getString("email");
 
-                // Set token in response header
-                response.setHeader("Authorization", "Bearer " + token);
+                    // Create JWT token
+                    Map<String, Object> claims = new HashMap<>();
+                    claims.put("role", "company");
+                    claims.put("user_id", companyId);
+                    claims.put("name", companyName);
 
-                // Also set in session for backward compatibility
-                HttpSession session = request.getSession();
-                session.setAttribute("company_id", companyId);
-                session.setAttribute("company_name", companyName);
-                session.setAttribute("company_email", companyEmail);
-                session.setAttribute("jwt_token", token);
+                    String token = JwtUtil.generateToken(email, claims);
 
-                response.sendRedirect("company_home.jsp");
+                    // Set token in response header
+                    response.setHeader("Authorization", "Bearer " + token);
+
+                    // Also set in session for backward compatibility
+                    HttpSession session = request.getSession();
+                    session.setAttribute("company_id", companyId);
+                    session.setAttribute("company_name", companyName);
+                    session.setAttribute("company_email", companyEmail);
+                    session.setAttribute("jwt_token", token);
+
+                    response.sendRedirect("company_home.jsp");
+                } else {
+                    request.setAttribute("error", "Invalid email or password.");
+                    RequestDispatcher rd = request.getRequestDispatcher("company_login.jsp");
+                    rd.forward(request, response);
+                }
             } else {
                 request.setAttribute("error", "Invalid email or password.");
                 RequestDispatcher rd = request.getRequestDispatcher("company_login.jsp");
                 rd.forward(request, response);
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            getServletContext().log("Database error in CompanyLoginServlet", e);
             request.setAttribute("error", "Database error: " + e.getMessage());
             RequestDispatcher rd = request.getRequestDispatcher("company_login.jsp");
             rd.forward(request, response);
         } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (Exception ignored) {
-            }
+            DBUtil.close(conn, ps, rs);
         }
     }
 }

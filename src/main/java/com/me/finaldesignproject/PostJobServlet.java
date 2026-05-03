@@ -1,8 +1,8 @@
 package com.me.finaldesignproject;
 
+import com.me.finaldesignproject.util.DBUtil;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -38,9 +38,7 @@ public class PostJobServlet extends HttpServlet {
         PreparedStatement ps = null;
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/design_engineering_portal", "root", "root");
+            conn = DBUtil.getConnection();
 
             String sql = "UPDATE companies SET job_role = ?, cgpa_required = ?, job_description = ?, posted_date = NOW() "
                     + "WHERE company_id = ?";
@@ -58,18 +56,10 @@ public class PostJobServlet extends HttpServlet {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            getServletContext().log("Error in PostJobServlet", e);
             response.sendRedirect("post_job.jsp?error=db");
         } finally {
-            try {
-                if (ps != null) {
-                    ps.close();
-                }
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (Exception ignored) {
-            }
+            DBUtil.close(conn, ps);
         }
     }
 }

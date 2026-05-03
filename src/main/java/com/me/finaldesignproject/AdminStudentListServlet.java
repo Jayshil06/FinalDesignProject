@@ -1,5 +1,6 @@
 package com.me.finaldesignproject;
 
+import com.me.finaldesignproject.util.DBUtil;
 import com.me.finaldesignproject.util.JwtUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -40,15 +41,16 @@ public class AdminStudentListServlet extends HttpServlet {
             }
 
             List<Student> studentList = new ArrayList<>();
+            Connection conn = null;
+            Statement stmt = null;
+            ResultSet rs = null;
 
             try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                Connection conn = DriverManager.getConnection(
-                        "jdbc:mysql://localhost:3306/design_engineering_portal", "root", "root");
+                conn = DBUtil.getConnection();
 
                 String sql = "SELECT * FROM students";
-                Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery(sql);
+                stmt = conn.createStatement();
+                rs = stmt.executeQuery(sql);
 
                 while (rs.next()) {
                     Student s = new Student();
@@ -61,13 +63,11 @@ public class AdminStudentListServlet extends HttpServlet {
                     studentList.add(s);
                 }
 
-                rs.close();
-                stmt.close();
-                conn.close();
-
             } catch (Exception e) {
-                e.printStackTrace();
+                getServletContext().log("Error in AdminStudentListServlet", e);
                 request.setAttribute("error", "Database error: " + e.getMessage());
+            } finally {
+                DBUtil.close(conn, stmt, rs);
             }
 
             request.setAttribute("students", studentList);

@@ -1,9 +1,9 @@
 package com.me.finaldesignproject;
 
+import com.me.finaldesignproject.util.DBUtil;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.LinkedHashMap;
@@ -17,9 +17,6 @@ import jakarta.servlet.http.HttpSession;
 
 public class StudentProfileServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/design_engineering_portal";
-    private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "root";
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -31,34 +28,35 @@ public class StudentProfileServlet extends HttpServlet {
         }
 
         String email = (String) session.getAttribute("email");
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new ServletException("MySQL JDBC Driver not found.", e);
-        }
-
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM students WHERE email = ?")) {
-
+            conn = DBUtil.getConnection();
+            stmt = conn.prepareStatement("SELECT * FROM students WHERE email = ?");
             stmt.setString(1, email);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (!rs.next()) {
-                    session.setAttribute("profileError", "No student record found.");
-                    response.sendRedirect("student_home.jsp");
-                    return;
-                }
+            rs = stmt.executeQuery();
 
-                request.setAttribute("student", buildStudentMap(rs));
-                moveFlashAttribute(session, request, "profileSuccess", "success");
-                moveFlashAttribute(session, request, "profileError", "error");
-                moveFlashAttribute(session, request, "profileEditMode", "editMode");
-
-                RequestDispatcher dispatcher = request.getRequestDispatcher("view_profile.jsp");
-                dispatcher.forward(request, response);
+            if (!rs.next()) {
+                session.setAttribute("profileError", "No student record found.");
+                response.sendRedirect("student_home.jsp");
+                return;
             }
+
+            request.setAttribute("student", buildStudentMap(rs));
+            moveFlashAttribute(session, request, "profileSuccess", "success");
+            moveFlashAttribute(session, request, "profileError", "error");
+            moveFlashAttribute(session, request, "profileEditMode", "editMode");
+
+            RequestDispatcher dispatcher = request.getRequestDispatcher("view_profile.jsp");
+            dispatcher.forward(request, response);
+
         } catch (Exception e) {
+            getServletContext().log("Error in StudentProfileServlet", e);
             throw new ServletException("Unable to load student profile.", e);
+        } finally {
+            DBUtil.close(conn, stmt, rs);
         }
     }
 

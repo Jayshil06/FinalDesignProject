@@ -1,5 +1,6 @@
 package com.me.finaldesignproject;
 
+import com.me.finaldesignproject.util.DBUtil;
 import java.io.*;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -17,9 +18,7 @@ public class DeleteCompanyServlet extends HttpServlet {
         Statement reorderStmt = null;
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/design_engineering_portal", "root", "root");
+            conn = DBUtil.getConnection();
 
             // Step 1: Delete the selected company
             String deleteSQL = "DELETE FROM companies WHERE company_id = ?";
@@ -39,12 +38,11 @@ public class DeleteCompanyServlet extends HttpServlet {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            getServletContext().log("Error in DeleteCompanyServlet", e);
             session.setAttribute("message", "❌ Error: " + e.getMessage());
         } finally {
-            try { if (deleteStmt != null) deleteStmt.close(); } catch (Exception e) {}
-            try { if (reorderStmt != null) reorderStmt.close(); } catch (Exception e) {}
-            try { if (conn != null) conn.close(); } catch (Exception e) {}
+            DBUtil.close(null, reorderStmt);
+            DBUtil.close(conn, deleteStmt);
         }
 
         response.sendRedirect("admin_company_details.jsp");

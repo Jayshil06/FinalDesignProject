@@ -1,5 +1,6 @@
 package com.me.finaldesignproject;
 
+import com.me.finaldesignproject.util.DBUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import java.io.IOException;
@@ -13,13 +14,12 @@ public class DatabaseInitializerServlet extends HttpServlet {
 
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
+        Connection conn = null;
+        Statement stmt = null;
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/design_engineering_portal", "root", "root");
-
-            Statement stmt = conn.createStatement();
+            conn = DBUtil.getConnection();
+            stmt = conn.createStatement();
 
             // Add status column to applications
             try {
@@ -37,14 +37,14 @@ public class DatabaseInitializerServlet extends HttpServlet {
                 out.println("<p>ℹ️ Column 'salary_offered' already exists or could not be added: " + e.getMessage() + "</p>");
             }
 
-            stmt.close();
-            conn.close();
             out.println("<h2>Database initialization complete! You can now use the Analytics Dashboard.</h2>");
             out.println("<a href='admin_home.jsp'>Return to Admin Home</a>");
 
         } catch (Exception e) {
+            getServletContext().log("Error initializing database", e);
             out.println("<p class='error'>❌ Error initializing database: " + e.getMessage() + "</p>");
-            e.printStackTrace();
+        } finally {
+            DBUtil.close(conn, stmt);
         }
     }
 }

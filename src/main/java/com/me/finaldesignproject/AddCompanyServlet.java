@@ -1,5 +1,6 @@
 package com.me.finaldesignproject;
 
+import com.me.finaldesignproject.util.DBUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import java.io.IOException;
@@ -17,21 +18,20 @@ public class AddCompanyServlet extends HttpServlet {
 
         HttpSession session = request.getSession();
 
+        Connection conn = null;
+        PreparedStatement ps = null;
+
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/design_engineering_portal", "root", "root");
+            conn = DBUtil.getConnection();
 
             String sql = "INSERT INTO companies (company_name, email, job_description, details, posted_date) VALUES (?, ?, ?, ?, NOW())";
-            PreparedStatement ps = conn.prepareStatement(sql);
+            ps = conn.prepareStatement(sql);
             ps.setString(1, name);
             ps.setString(2, email);
             ps.setString(3, jobDescription);
             ps.setString(4, details);
 
             int rowsInserted = ps.executeUpdate();
-            ps.close();
-            conn.close();
 
             if (rowsInserted > 0) {
                 session.setAttribute("message", "✅ Company added successfully.");
@@ -40,8 +40,10 @@ public class AddCompanyServlet extends HttpServlet {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            getServletContext().log("Error in AddCompanyServlet", e);
             session.setAttribute("message", "❌ Error: " + e.getMessage());
+        } finally {
+            DBUtil.close(conn, ps);
         }
 
         response.sendRedirect("admin_company_details.jsp");

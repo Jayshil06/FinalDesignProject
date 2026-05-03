@@ -1,5 +1,6 @@
 package com.me.finaldesignproject;
 
+import com.me.finaldesignproject.util.DBUtil;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -30,13 +31,7 @@ public class DownloadResumeServlet extends HttpServlet {
         ResultSet rs = null;
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-
-            conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/design_engineering_portal",
-                "root",
-                "root"
-            );
+            conn = DBUtil.getConnection();
 
             String sql = "SELECT resume_path FROM students WHERE enrollment_no = ?";
             stmt = conn.prepareStatement(sql);
@@ -100,12 +95,10 @@ public class DownloadResumeServlet extends HttpServlet {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            getServletContext().log("Error in DownloadResumeServlet", e);
             response.getWriter().write("Error: " + e.getMessage());
         } finally {
-            try { if (rs != null) rs.close(); } catch (Exception ignored) {}
-            try { if (stmt != null) stmt.close(); } catch (Exception ignored) {}
-            try { if (conn != null) conn.close(); } catch (Exception ignored) {}
+            DBUtil.close(conn, stmt, rs);
         }
     }
 }
